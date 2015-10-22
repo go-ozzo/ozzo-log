@@ -89,8 +89,7 @@ func (t *FileTarget) Process(e *Entry) {
 }
 
 func (t *FileTarget) rotate(bytes int64) {
-	t.currentBytes += bytes
-	if t.currentBytes <= t.MaxBytes || bytes > t.MaxBytes {
+	if t.currentBytes + bytes <= t.MaxBytes || bytes > t.MaxBytes {
 		return
 	}
 	t.fd.Close()
