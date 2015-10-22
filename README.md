@@ -185,7 +185,7 @@ ozzo-log is designed with this in mind.
 For example, you can use a JSON file to specify how the application and its
 logger should be configured:
 
-```json
+```
 {
     "Logger": {
         "Targets": [
@@ -215,9 +215,10 @@ import (
 
 func main() {
     c := config.New()
-    c.Register("ConsoleTarget", log.NewConsoleTarget)
-    c.Register("ConsoleTarget", log.NewFileTarget)
     c.Load("app.json")
+    // register the target types to allow configuring Logger.Targets.
+    c.Register("ConsoleTarget", log.NewConsoleTarget)
+    c.Register("FileTarget", log.NewFileTarget)
 
     logger := log.NewLogger()
     if err := c.Configure(logger, "Logger"); err != nil {
@@ -226,5 +227,5 @@ func main() {
 }
 ```
 
-To change the logger configuration, simply modify the JSON file without the need of
+To change the logger configuration, simply modify the JSON file without
 recompiling the Go source files.
