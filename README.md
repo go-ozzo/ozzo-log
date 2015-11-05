@@ -53,7 +53,7 @@ func main() {
 
 	// calls log methods to log various log messages
 	logger.Error("plain text error")
-	logger.Errorf("error with format: %v", true)
+	logger.Error("error with format: %v", true)
 	logger.Debug("some debug info")
 
 	// customizes log category
