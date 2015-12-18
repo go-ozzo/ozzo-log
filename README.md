@@ -4,6 +4,12 @@
 [![Build Status](https://travis-ci.org/go-ozzo/ozzo-log.svg?branch=master)](https://travis-ci.org/go-ozzo/ozzo-log)
 [![Coverage](http://gocover.io/_badge/github.com/go-ozzo/ozzo-log)](http://gocover.io/github.com/go-ozzo/ozzo-log)
 
+## Other languages
+
+[Русский](/docs/README-ru.md)
+
+## Description
+
 ozzo-log is a Go package providing enhanced logging support for Go programs. It has the following features:
 
 * High performance through asynchronous logging;
