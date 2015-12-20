@@ -36,6 +36,7 @@ type ConsoleTarget struct {
 	*Filter
 	ColorMode bool      // whether to use colors to differentiate log levels
 	Writer    io.Writer // the writer to write log messages
+	close     chan bool
 }
 
 // NewConsoleTarget creates a ConsoleTarget.
@@ -46,6 +47,7 @@ func NewConsoleTarget() *ConsoleTarget {
 		Filter: &Filter{MaxLevel: LevelDebug},
 		ColorMode: true,
 		Writer: os.Stdout,
+		close: make(chan bool, 0),
 	}
 }
 
@@ -63,7 +65,11 @@ func (t *ConsoleTarget) Open(io.Writer) error {
 
 // Process writes a log message using Writer.
 func (t *ConsoleTarget) Process(e *Entry) {
-	if e == nil || !t.Allow(e) {
+	if e == nil {
+		t.close <- true
+		return
+	}
+	if !t.Allow(e) {
 		return
 	}
 	msg := e.String()
@@ -74,4 +80,8 @@ func (t *ConsoleTarget) Process(e *Entry) {
 		}
 	}
 	fmt.Fprintln(t.Writer, msg)
+}
+
+func (t *ConsoleTarget) Close() {
+	<- t.close
 }

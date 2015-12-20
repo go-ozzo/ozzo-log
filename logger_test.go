@@ -64,10 +64,15 @@ func (m *MemoryTarget)Process(e *log.Entry) {
 	}
 }
 
+func (t *MemoryTarget) Close() {
+	<- t.ready
+}
+
 func TestLoggerLog(t *testing.T) {
 	logger := log.NewLogger()
-	target := &MemoryTarget{}
-	target.ready = make(chan bool, 0)
+	target := &MemoryTarget{
+		ready: make(chan bool, 0),
+	}
 	logger.Targets = append(logger.Targets, target)
 
 	if target.open {
@@ -89,7 +94,6 @@ func TestLoggerLog(t *testing.T) {
 	logger.Emergency("t8")
 
 	logger.Close()
-	<- target.ready
 
 	if len(target.entries) != 9 {
 		t.Errorf("len(target.entries) = %v, expected %v", len(target.entries), 9)

@@ -30,6 +30,7 @@ type FileTarget struct {
 	fd           *os.File
 	currentBytes int64
 	errWriter    io.Writer
+	close        chan bool
 }
 
 // NewFileTarget creates a FileTarget.
@@ -42,6 +43,7 @@ func NewFileTarget() *FileTarget {
 		Rotate: true,
 		BackupCount: 10,
 		MaxBytes: 1 << 20, // 1MB
+		close: make(chan bool, 0),
 	}
 }
 
@@ -74,6 +76,7 @@ func (t *FileTarget) Open(errWriter io.Writer) error {
 func (t *FileTarget) Process(e *Entry) {
 	if e == nil {
 		t.fd.Close()
+		t.close <- true
 		return
 	}
 	if t.fd != nil && t.Allow(e) {
@@ -86,6 +89,10 @@ func (t *FileTarget) Process(e *Entry) {
 			fmt.Fprintf(t.errWriter, "FileTarge write error: %v\n", err)
 		}
 	}
+}
+
+func (t *FileTarget) Close() {
+	<-t.close
 }
 
 func (t *FileTarget) rotate(bytes int64) {

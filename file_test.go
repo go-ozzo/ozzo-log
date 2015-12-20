@@ -7,6 +7,9 @@ package log_test
 import (
 	"testing"
 	"github.com/go-ozzo/ozzo-log"
+	"io/ioutil"
+	"strings"
+	"os"
 )
 
 func TestNewFileTarget(t *testing.T) {
@@ -22,5 +25,32 @@ func TestNewFileTarget(t *testing.T) {
 	}
 	if target.MaxBytes != (1 << 20) {
 		t.Errorf("NewFileTarget.MaxBytes = %v, expected %v", target.MaxBytes, 1 << 20)
+	}
+}
+
+func TestFileTarget(t *testing.T) {
+	logFile := "app.log"
+	os.Remove(logFile)
+
+	logger := log.NewLogger()
+	target := log.NewFileTarget()
+	target.FileName = logFile
+	target.Categories = []string{"system.*"}
+	logger.Targets = append(logger.Targets, target)
+	logger.Open()
+	logger.Info("t1: %v", 2)
+	logger.GetLogger("system.db").Info("t2: %v", 3)
+	logger.Close()
+
+	bytes, err := ioutil.ReadFile(logFile)
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	if strings.Contains(string(bytes), "t1: 2") {
+		t.Errorf("Found unexpected %q", "t1: 2")
+	}
+	if !strings.Contains(string(bytes), "t2: 3") {
+		t.Errorf("Expected %q not found", "t2: 3")
 	}
 }

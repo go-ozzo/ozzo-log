@@ -34,6 +34,7 @@ type NetworkTarget struct {
 
 	entries    chan *Entry
 	conn       net.Conn
+	close      chan bool
 }
 
 // NewNetworkTarget creates a NetworkTarget.
@@ -45,6 +46,7 @@ func NewNetworkTarget() *NetworkTarget {
 		Filter: &Filter{MaxLevel:LevelDebug},
 		BufferSize: 1024,
 		Persistent: true,
+		close: make(chan bool, 0),
 	}
 }
 
@@ -86,6 +88,10 @@ func (t *NetworkTarget) Process(e *Entry) {
 	}
 }
 
+func (t *NetworkTarget) Close() {
+	<-t.close
+}
+
 func (t *NetworkTarget) connect() error {
 	if t.conn != nil {
 		t.conn.Close()
@@ -112,6 +118,7 @@ func (t *NetworkTarget) sendMessages(errWriter io.Writer) {
 			if t.conn != nil {
 				t.conn.Close()
 			}
+			t.close <- true
 			break
 		}
 		if err := t.write(entry.String() + "\n"); err != nil {

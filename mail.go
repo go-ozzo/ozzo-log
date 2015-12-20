@@ -24,6 +24,7 @@ type MailTarget struct {
 	BufferSize int      // the size of the message channel.
 
 	entries    chan *Entry
+	close      chan bool
 }
 
 // NewMailTarget creates a MailTarget.
@@ -34,6 +35,7 @@ func NewMailTarget() *MailTarget {
 	return &MailTarget{
 		Filter: &Filter{MaxLevel:LevelDebug},
 		BufferSize: 1024,
+		close: make(chan bool, 0),
 	}
 }
 
@@ -71,6 +73,10 @@ func (t *MailTarget) Process(e *Entry) {
 	}
 }
 
+func (t *MailTarget) Close() {
+	<-t.close
+}
+
 func (t *MailTarget) sendMessages(errWriter io.Writer) {
 	auth := smtp.PlainAuth(
 		"",
@@ -81,6 +87,7 @@ func (t *MailTarget) sendMessages(errWriter io.Writer) {
 	for {
 		entry := <-t.entries
 		if entry == nil {
+			t.close <- true
 			break
 		}
 		if err := t.write(auth, entry.String() + "\n"); err != nil {

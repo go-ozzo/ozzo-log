@@ -77,6 +77,10 @@ type Target interface {
 	Open(errWriter io.Writer) error
 	// Process processes an incoming log message.
 	Process(*Entry)
+	// Close closes a target.
+	// Close is called when Logger.Close() is called, which gives each target
+	// a chance to flush the logged messages to their destination storage.
+	Close()
 }
 
 // coreLogger maintains the log messages in a channel and sends them to various targets.
@@ -254,14 +258,15 @@ func (l *coreLogger) process() {
 // Existing messages will be processed before the targets are closed.
 // New incoming messages will be discarded after calling this method.
 func (l *coreLogger) Close() {
-	l.lock.Lock()
-	defer l.lock.Unlock()
-
 	if !l.open {
 		return
 	}
 	l.open = false
+	// use a nil entry to signal the close of logger
 	l.entries <- nil
+	for _, target := range l.Targets {
+		target.Close()
+	}
 }
 
 // DefaultFormatter is the default formatter used to format every log message.
