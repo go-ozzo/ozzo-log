@@ -55,8 +55,8 @@ func main() {
 	t2.MaxLevel = log.LevelError
 	logger.Targets = append(logger.Targets, t1, t2)
 
-    // opens the logger
 	logger.Open()
+	defer logger.Close()
 
 	// calls log methods to log various log messages
 	logger.Error("plain text error")
@@ -69,7 +69,6 @@ func main() {
 	l.Warning("some warning")
 
 	...
-	logger.Close()
 }
 ```
 
