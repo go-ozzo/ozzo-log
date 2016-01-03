@@ -48,7 +48,7 @@ func main() {
     // creates the root logger
 	logger := log.NewLogger()
 
-	// adds a console targe and a file target
+	// adds a console target and a file target
 	t1 := log.NewConsoleTarget()
 	t2 := log.NewFileTarget()
 	t2.FileName = "app.log"
