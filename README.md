@@ -159,6 +159,19 @@ logger = logger.GetLogger("app", func (l *Logger, e *Entry) string {
 })
 ```
 
+## Logging Call Stacks
+
+By setting `Logger.CallStackDepth` as a positive number, it is possible to record call stack information for
+each log method call. You may further configure `Logger.CallStackFilter` so that only call stack frames containing
+the specified substring will be recorded. For example,
+
+```go
+logger := log.NewLogger()
+// record call stacks containing "myapp/src" up to 5 frames per log message
+logger.CallStackDepth = 5
+logger.CallStackFilter = "myapp/src"
+```
+
 ## Message Filtering
 
 By default, messages of *all* severity levels will be recorded. You may customize
