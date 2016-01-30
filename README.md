@@ -6,7 +6,7 @@
 
 ## Other languages
 
-[Русский](/docs/README-ru.md)
+[简体中文](/docs/README-zh-CN.md) [Русский](/docs/README-ru.md)
 
 ## Description
 
