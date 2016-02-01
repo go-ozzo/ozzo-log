@@ -6,16 +6,15 @@
 package log
 
 import (
-	"fmt"
-	"time"
-	"sync"
 	"bytes"
-	"runtime"
+	"errors"
+	"fmt"
 	"io"
 	"os"
-	"errors"
+	"runtime"
+	"sync"
+	"time"
 )
-
 
 // RFC5424 log message levels.
 const (
@@ -34,13 +33,13 @@ type Level int
 
 // LevelNames maps log levels to names
 var LevelNames = map[Level]string{
-	LevelDebug: "Debug",
-	LevelInfo: "Info",
-	LevelNotice: "Notice",
-	LevelWarning: "Warning",
-	LevelError: "Error",
-	LevelCritical: "Critical",
-	LevelAlert: "Alert",
+	LevelDebug:     "Debug",
+	LevelInfo:      "Info",
+	LevelNotice:    "Notice",
+	LevelWarning:   "Warning",
+	LevelError:     "Error",
+	LevelCritical:  "Critical",
+	LevelAlert:     "Alert",
 	LevelEmergency: "Emergency",
 }
 
@@ -54,11 +53,11 @@ func (l Level) String() string {
 
 // Entry represents a log entry.
 type Entry struct {
-	Level            Level
-	Category         string
-	Message          string
-	Time             time.Time
-	CallStack        string
+	Level     Level
+	Category  string
+	Message   string
+	Time      time.Time
+	CallStack string
 
 	FormattedMessage string
 }
@@ -85,15 +84,15 @@ type Target interface {
 
 // coreLogger maintains the log messages in a channel and sends them to various targets.
 type coreLogger struct {
-	lock           sync.Mutex
-	open           bool        // whether the logger is open
-	entries        chan *Entry // log entries
+	lock    sync.Mutex
+	open    bool        // whether the logger is open
+	entries chan *Entry // log entries
 
-	ErrorWriter    io.Writer   // the writer used to write errors caused by log targets
-	BufferSize     int         // the size of the channel storing log entries
-	CallStackDepth int         // the number of call stack frames to be logged for each message. 0 means do not log any call stack frame.
-	MaxLevel       Level       // the maximum level of messages to be logged
-	Targets        []Target    // targets for sending log messages to
+	ErrorWriter    io.Writer // the writer used to write errors caused by log targets
+	BufferSize     int       // the size of the channel storing log entries
+	CallStackDepth int       // the number of call stack frames to be logged for each message. 0 means do not log any call stack frame.
+	MaxLevel       Level     // the maximum level of messages to be logged
+	Targets        []Target  // targets for sending log messages to
 }
 
 // Formatter formats a log message into an appropriate string.
@@ -113,9 +112,9 @@ type Logger struct {
 func NewLogger() *Logger {
 	logger := &coreLogger{
 		ErrorWriter: os.Stderr,
-		BufferSize: 1024,
-		MaxLevel: LevelDebug,
-		Targets: make([]Target, 0),
+		BufferSize:  1024,
+		MaxLevel:    LevelDebug,
+		Targets:     make([]Target, 0),
 	}
 	return &Logger{logger, "app", DefaultFormatter}
 }
@@ -192,9 +191,9 @@ func (l *Logger) Log(level Level, format string, a ...interface{}) {
 	}
 	entry := &Entry{
 		Category: l.Category,
-		Level: level,
-		Message: message,
-		Time: time.Now(),
+		Level:    level,
+		Message:  message,
+		Time:     time.Now(),
 	}
 	if l.CallStackDepth > 0 {
 		entry.CallStack = GetCallStack(3, l.CallStackDepth)
@@ -279,7 +278,7 @@ func DefaultFormatter(l *Logger, e *Entry) string {
 // the frames parameter specifies at most how many frames should be returned.
 func GetCallStack(skip int, frames int) string {
 	buf := new(bytes.Buffer)
-	for i := skip; i < skip + frames; i++ {
+	for i := skip; i < skip+frames; i++ {
 		_, file, line, ok := runtime.Caller(i)
 		if !ok {
 			break

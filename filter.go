@@ -13,8 +13,8 @@ type Filter struct {
 	catNames    map[string]bool
 	catPrefixes []string
 
-	MaxLevel    Level    // the maximum severity level that is allowed
-	Categories  []string // the allowed message categories. Categories can use "*" as a suffix for wildcard matching.
+	MaxLevel   Level    // the maximum severity level that is allowed
+	Categories []string // the allowed message categories. Categories can use "*" as a suffix for wildcard matching.
 }
 
 // Init initializes the filter.
@@ -24,7 +24,7 @@ func (t *Filter) Init() {
 	t.catPrefixes = make([]string, 0)
 	for _, cat := range t.Categories {
 		if strings.HasSuffix(cat, "*") {
-			t.catPrefixes = append(t.catPrefixes, cat[:len(cat) - 1])
+			t.catPrefixes = append(t.catPrefixes, cat[:len(cat)-1])
 		} else {
 			t.catNames[cat] = true
 		}
