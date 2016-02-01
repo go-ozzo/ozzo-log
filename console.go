@@ -82,6 +82,7 @@ func (t *ConsoleTarget) Process(e *Entry) {
 	fmt.Fprintln(t.Writer, msg)
 }
 
+// Close closes the console target.
 func (t *ConsoleTarget) Close() {
 	<-t.close
 }

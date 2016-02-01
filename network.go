@@ -88,6 +88,7 @@ func (t *NetworkTarget) Process(e *Entry) {
 	}
 }
 
+// Close closes the network target.
 func (t *NetworkTarget) Close() {
 	<-t.close
 }

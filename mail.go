@@ -73,6 +73,7 @@ func (t *MailTarget) Process(e *Entry) {
 	}
 }
 
+// Close closes the mail target.
 func (t *MailTarget) Close() {
 	<-t.close
 }

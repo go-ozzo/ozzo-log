@@ -91,6 +91,7 @@ func (t *FileTarget) Process(e *Entry) {
 	}
 }
 
+// Close closes the file target.
 func (t *FileTarget) Close() {
 	<-t.close
 }
