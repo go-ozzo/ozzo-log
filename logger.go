@@ -226,7 +226,7 @@ func (l *coreLogger) Open() error {
 	targets := make([]Target, 0)
 	for _, target := range l.Targets {
 		if err := target.Open(l.ErrorWriter); err != nil {
-			fmt.Fprintf(l.ErrorWriter, "Failed to open target: ", err)
+			fmt.Fprintf(l.ErrorWriter, "Failed to open target: %v", err)
 		} else {
 			targets = append(targets, target)
 		}

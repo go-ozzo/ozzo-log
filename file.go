@@ -116,7 +116,7 @@ func (t *FileTarget) rotate(bytes int64) {
 		if i == t.BackupCount {
 			os.Remove(path)
 		} else {
-			os.Rename(path, fmt.Sprint("%v.%v", t.FileName, i+1))
+			os.Rename(path, fmt.Sprintf("%v.%v", t.FileName, i+1))
 		}
 	}
 	t.fd, err = os.OpenFile(t.FileName, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0660)

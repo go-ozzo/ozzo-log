@@ -42,7 +42,7 @@ func (s *LogServer) Start(network, address string) error {
 			return
 		}
 		if _, err := conn.Read(s.buffer); err != nil {
-			s.t.Error("Server read error: %v", err)
+			s.t.Errorf("Server read error: %v", err)
 		}
 		s.done <- true
 	}()
