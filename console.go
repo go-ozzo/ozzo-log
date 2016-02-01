@@ -5,11 +5,11 @@
 package log
 
 import (
-	"errors"
-	"fmt"
 	"io"
-	"os"
+	"fmt"
 	"runtime"
+	"os"
+	"errors"
 )
 
 type consoleBrush func(string) string
@@ -21,13 +21,13 @@ func newConsoleBrush(format string) consoleBrush {
 }
 
 var brushes = map[Level]consoleBrush{
-	LevelDebug:     newConsoleBrush("39"),   // default
-	LevelInfo:      newConsoleBrush("32"),   // green
-	LevelNotice:    newConsoleBrush("36"),   // cyan
-	LevelWarning:   newConsoleBrush("33"),   // yellow
-	LevelError:     newConsoleBrush("31"),   // red
-	LevelCritical:  newConsoleBrush("35"),   // magenta
-	LevelAlert:     newConsoleBrush("1;91"), // bold light red
+	LevelDebug: newConsoleBrush("39"), // default
+	LevelInfo: newConsoleBrush("32"), // green
+	LevelNotice: newConsoleBrush("36"), // cyan
+	LevelWarning: newConsoleBrush("33"), // yellow
+	LevelError: newConsoleBrush("31"), // red
+	LevelCritical: newConsoleBrush("35"), // magenta
+	LevelAlert: newConsoleBrush("1;91"), // bold light red
 	LevelEmergency: newConsoleBrush("1;95"), // bold light magenta
 }
 
@@ -44,10 +44,10 @@ type ConsoleTarget struct {
 // MaxLevel: LevelDebug, ColorMode: true, Writer: os.Stdout
 func NewConsoleTarget() *ConsoleTarget {
 	return &ConsoleTarget{
-		Filter:    &Filter{MaxLevel: LevelDebug},
+		Filter: &Filter{MaxLevel: LevelDebug},
 		ColorMode: true,
-		Writer:    os.Stdout,
-		close:     make(chan bool, 0),
+		Writer: os.Stdout,
+		close: make(chan bool, 0),
 	}
 }
 
@@ -83,5 +83,5 @@ func (t *ConsoleTarget) Process(e *Entry) {
 }
 
 func (t *ConsoleTarget) Close() {
-	<-t.close
+	<- t.close
 }

@@ -5,9 +5,9 @@
 package log_test
 
 import (
+	"testing"
 	"github.com/go-ozzo/ozzo-log"
 	"strings"
-	"testing"
 )
 
 func TestFilterAllow(t *testing.T) {

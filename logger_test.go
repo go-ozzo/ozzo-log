@@ -5,10 +5,10 @@
 package log_test
 
 import (
-	"github.com/go-ozzo/ozzo-config"
-	"github.com/go-ozzo/ozzo-log"
 	"io"
 	"testing"
+	"github.com/go-ozzo/ozzo-log"
+	"github.com/go-ozzo/ozzo-config"
 )
 
 func TestNewLogger(t *testing.T) {
@@ -50,13 +50,13 @@ type MemoryTarget struct {
 	Option2 bool
 }
 
-func (m *MemoryTarget) Open(io.Writer) error {
+func (m *MemoryTarget)Open(io.Writer) error {
 	m.open = true
 	m.entries = make([]*log.Entry, 0)
 	return nil
 }
 
-func (m *MemoryTarget) Process(e *log.Entry) {
+func (m *MemoryTarget)Process(e *log.Entry) {
 	if e == nil {
 		m.ready <- true
 	} else {
@@ -65,7 +65,7 @@ func (m *MemoryTarget) Process(e *log.Entry) {
 }
 
 func (t *MemoryTarget) Close() {
-	<-t.ready
+	<- t.ready
 }
 
 func TestLoggerLog(t *testing.T) {

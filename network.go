@@ -5,10 +5,10 @@
 package log
 
 import (
-	"errors"
-	"fmt"
-	"io"
 	"net"
+	"errors"
+	"io"
+	"fmt"
 )
 
 // NetworkTarget sends log messages over a network connection.
@@ -19,12 +19,12 @@ type NetworkTarget struct {
 	// "udp", "udp4" (IPv4-only), "udp6" (IPv6-only), "ip", "ip4"
 	// (IPv4-only), "ip6" (IPv6-only), "unix", "unixgram" and
 	// "unixpacket".
-	Network string
+	Network    string
 	// the address on the network to connect to.
 	// For TCP and UDP networks, addresses have the form host:port.
 	// If host is a literal IPv6 address it must be enclosed
 	// in square brackets as in "[::1]:80" or "[ipv6-host%zone]:80".
-	Address string
+	Address    string
 	// whether to use a persistent network connection.
 	// If this is false, for every message to be sent, a network
 	// connection will be open and closed.
@@ -32,9 +32,9 @@ type NetworkTarget struct {
 	// the size of the message channel.
 	BufferSize int
 
-	entries chan *Entry
-	conn    net.Conn
-	close   chan bool
+	entries    chan *Entry
+	conn       net.Conn
+	close      chan bool
 }
 
 // NewNetworkTarget creates a NetworkTarget.
@@ -43,10 +43,10 @@ type NetworkTarget struct {
 // You must specify the Network and Address fields.
 func NewNetworkTarget() *NetworkTarget {
 	return &NetworkTarget{
-		Filter:     &Filter{MaxLevel: LevelDebug},
+		Filter: &Filter{MaxLevel:LevelDebug},
 		BufferSize: 1024,
 		Persistent: true,
-		close:      make(chan bool, 0),
+		close: make(chan bool, 0),
 	}
 }
 

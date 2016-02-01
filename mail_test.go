@@ -5,8 +5,8 @@
 package log_test
 
 import (
-	"github.com/go-ozzo/ozzo-log"
 	"testing"
+	"github.com/go-ozzo/ozzo-log"
 )
 
 func TestNewMailTarget(t *testing.T) {

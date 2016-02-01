@@ -5,9 +5,9 @@
 package log_test
 
 import (
-	"github.com/go-ozzo/ozzo-log"
-	"strings"
 	"testing"
+	"strings"
+	"github.com/go-ozzo/ozzo-log"
 )
 
 func TestNewConsoleTarget(t *testing.T) {
@@ -47,7 +47,7 @@ func (t *ConsoleTargetMock) Process(e *log.Entry) {
 func TestConsoleTarget(t *testing.T) {
 	logger := log.NewLogger()
 	target := &ConsoleTargetMock{
-		done:          make(chan bool, 0),
+		done: make(chan bool, 0),
 		ConsoleTarget: log.NewConsoleTarget(),
 	}
 	writer := &MemoryWriter{}
@@ -60,7 +60,7 @@ func TestConsoleTarget(t *testing.T) {
 	logger.GetLogger("system.db").Info("t2: %v", 3)
 
 	logger.Close()
-	<-target.done
+	<- target.done
 
 	if strings.Contains(string(writer.bytes), "t1: 2") {
 		t.Errorf("Found unexpected %q", "t1: 2")

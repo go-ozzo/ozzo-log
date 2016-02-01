@@ -5,11 +5,11 @@
 package log_test
 
 import (
+	"testing"
 	"github.com/go-ozzo/ozzo-log"
 	"io/ioutil"
-	"os"
 	"strings"
-	"testing"
+	"os"
 )
 
 func TestNewFileTarget(t *testing.T) {
@@ -24,7 +24,7 @@ func TestNewFileTarget(t *testing.T) {
 		t.Errorf("NewFileTarget.BackupCount = %v, expected %v", target.BackupCount, 10)
 	}
 	if target.MaxBytes != (1 << 20) {
-		t.Errorf("NewFileTarget.MaxBytes = %v, expected %v", target.MaxBytes, 1<<20)
+		t.Errorf("NewFileTarget.MaxBytes = %v, expected %v", target.MaxBytes, 1 << 20)
 	}
 }
 

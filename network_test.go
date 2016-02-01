@@ -5,10 +5,10 @@
 package log_test
 
 import (
-	"github.com/go-ozzo/ozzo-log"
+	"testing"
 	"net"
 	"strings"
-	"testing"
+	"github.com/go-ozzo/ozzo-log"
 )
 
 func TestNewNetworkTarget(t *testing.T) {
@@ -72,7 +72,7 @@ func TestNetworkTarget(t *testing.T) {
 
 	logger.Close()
 
-	<-server.done
+	<- server.done
 
 	result := string(server.buffer)
 	if strings.Contains(result, "t1: 2") {
