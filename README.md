@@ -49,15 +49,15 @@ func main() {
     // creates the root logger
 	logger := log.NewLogger()
 
-	// adds a console targe and a file target
+	// adds a console target and a file target
 	t1 := log.NewConsoleTarget()
 	t2 := log.NewFileTarget()
 	t2.FileName = "app.log"
 	t2.MaxLevel = log.LevelError
 	logger.Targets = append(logger.Targets, t1, t2)
 
-    // opens the logger
 	logger.Open()
+	defer logger.Close()
 
 	// calls log methods to log various log messages
 	logger.Error("plain text error")
@@ -70,7 +70,6 @@ func main() {
 	l.Warning("some warning")
 
 	...
-	logger.Close()
 }
 ```
 
@@ -160,6 +159,21 @@ logger = logger.GetLogger("app", func (l *Logger, e *Entry) string {
     return fmt.Sprintf("%v [%v][%v] %v%v", e.Time.Format(time.RFC822Z), e.Level, e.Category, e.Message, e.CallStack)
 })
 ```
+
+
+## Logging Call Stacks
+
+By setting `Logger.CallStackDepth` as a positive number, it is possible to record call stack information for
+each log method call. You may further configure `Logger.CallStackFilter` so that only call stack frames containing
+the specified substring will be recorded. For example,
+
+```go
+logger := log.NewLogger()
+// record call stacks containing "myapp/src" up to 5 frames per log message
+logger.CallStackDepth = 5
+logger.CallStackFilter = "myapp/src"
+```
+
 
 ## Message Filtering
 
