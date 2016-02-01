@@ -5,11 +5,11 @@
 package log
 
 import (
+	"errors"
+	"fmt"
+	"io"
 	"net/smtp"
 	"strings"
-	"errors"
-	"io"
-	"fmt"
 )
 
 // MailTarget sends log messages in emails via an SMTP server.
@@ -23,8 +23,8 @@ type MailTarget struct {
 	Recipients []string // the mail recipients
 	BufferSize int      // the size of the message channel.
 
-	entries    chan *Entry
-	close      chan bool
+	entries chan *Entry
+	close   chan bool
 }
 
 // NewMailTarget creates a MailTarget.
@@ -33,9 +33,9 @@ type MailTarget struct {
 // You must specify these fields: Host, Username, Subject, Sender, and Recipients.
 func NewMailTarget() *MailTarget {
 	return &MailTarget{
-		Filter: &Filter{MaxLevel:LevelDebug},
+		Filter:     &Filter{MaxLevel: LevelDebug},
 		BufferSize: 1024,
-		close: make(chan bool, 0),
+		close:      make(chan bool, 0),
 	}
 }
 
@@ -90,7 +90,7 @@ func (t *MailTarget) sendMessages(errWriter io.Writer) {
 			t.close <- true
 			break
 		}
-		if err := t.write(auth, entry.String() + "\n"); err != nil {
+		if err := t.write(auth, entry.String()+"\n"); err != nil {
 			fmt.Fprintf(errWriter, "MailTarget write error: %v\n", err)
 		}
 	}

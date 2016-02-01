@@ -5,10 +5,10 @@
 package log
 
 import (
-	"os"
-	"io"
-	"fmt"
 	"errors"
+	"fmt"
+	"io"
+	"os"
 )
 
 // FileTarget writes filtered log messages to a file.
@@ -17,15 +17,15 @@ type FileTarget struct {
 	*Filter
 	// the log file name. When Rotate is true, log file name will be suffixed
 	// to differentiate different backup copies (e.g. app.log.1)
-	FileName     string
+	FileName string
 	// whether to enable file rotating at specific time interval or when maximum file size is reached.
-	Rotate       bool
+	Rotate bool
 	// how many log files should be kept when Rotate is true (the current log file is not included).
 	// This field is ignored when Rotate is false.
-	BackupCount  int
+	BackupCount int
 	// maximum number of bytes allowed for a log file. Zero means no limit.
 	// This field is ignored when Rotate is false.
-	MaxBytes     int64
+	MaxBytes int64
 
 	fd           *os.File
 	currentBytes int64
@@ -39,11 +39,11 @@ type FileTarget struct {
 // You must specify the FileName field.
 func NewFileTarget() *FileTarget {
 	return &FileTarget{
-		Filter: &Filter{MaxLevel:LevelDebug},
-		Rotate: true,
+		Filter:      &Filter{MaxLevel: LevelDebug},
+		Rotate:      true,
 		BackupCount: 10,
-		MaxBytes: 1 << 20, // 1MB
-		close: make(chan bool, 0),
+		MaxBytes:    1 << 20, // 1MB
+		close:       make(chan bool, 0),
 	}
 }
 
@@ -62,7 +62,7 @@ func (t *FileTarget) Open(errWriter io.Writer) error {
 		}
 	}
 
-	fd, err := os.OpenFile(t.FileName, os.O_WRONLY | os.O_APPEND | os.O_CREATE, 0660)
+	fd, err := os.OpenFile(t.FileName, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0660)
 	if err != nil {
 		return fmt.Errorf("FileTarget was unable to create a log file: %v", err)
 	}
@@ -96,7 +96,7 @@ func (t *FileTarget) Close() {
 }
 
 func (t *FileTarget) rotate(bytes int64) {
-	if t.currentBytes + bytes <= t.MaxBytes || bytes > t.MaxBytes {
+	if t.currentBytes+bytes <= t.MaxBytes || bytes > t.MaxBytes {
 		return
 	}
 	t.fd.Close()
@@ -115,10 +115,10 @@ func (t *FileTarget) rotate(bytes int64) {
 		if i == t.BackupCount {
 			os.Remove(path)
 		} else {
-			os.Rename(path, fmt.Sprint("%v.%v", t.FileName, i + 1))
+			os.Rename(path, fmt.Sprint("%v.%v", t.FileName, i+1))
 		}
 	}
-	t.fd, err = os.OpenFile(t.FileName, os.O_WRONLY | os.O_APPEND | os.O_CREATE, 0660)
+	t.fd, err = os.OpenFile(t.FileName, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0660)
 	if err != nil {
 		t.fd = nil
 		fmt.Fprintf(t.errWriter, "FileTarget was unable to create a log file: %v", err)
