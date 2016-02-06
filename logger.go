@@ -225,7 +225,7 @@ func (l *coreLogger) Open() error {
 	}
 
 	l.entries = make(chan *Entry, l.BufferSize)
-	targets := make([]Target, 0)
+	var targets []Target
 	for _, target := range l.Targets {
 		if err := target.Open(l.ErrorWriter); err != nil {
 			fmt.Fprintf(l.ErrorWriter, "Failed to open target: %v", err)
