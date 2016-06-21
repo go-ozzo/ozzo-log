@@ -1,15 +1,16 @@
-// Copyright 2015 Qiang Xue. All rights reserved.
-// Use of this source code is governed by a BSD-style
+// Copyright 2016 Qiang Xue. All rights reserved.
+// Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
 package log_test
 
 import (
-	"github.com/go-ozzo/ozzo-log"
 	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/go-ozzo/ozzo-log"
 )
 
 func TestNewFileTarget(t *testing.T) {
