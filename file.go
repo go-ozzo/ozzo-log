@@ -104,7 +104,7 @@ func (t *FileTarget) rotate(bytes int64) {
 	t.currentBytes = 0
 
 	var err error
-	for i := t.BackupCount; i >= 0; i++ {
+	for i := t.BackupCount; i >= 0; i-- {
 		path := t.FileName
 		if i > 0 {
 			path = fmt.Sprintf("%v.%v", t.FileName, i)
