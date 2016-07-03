@@ -35,7 +35,6 @@ func NewMailTarget() *MailTarget {
 	return &MailTarget{
 		Filter:     &Filter{MaxLevel: LevelDebug},
 		BufferSize: 1024,
-		entries:make(chan *Entry,100),
 		close:      make(chan bool, 0),
 	}
 }
@@ -58,6 +57,10 @@ func (t *MailTarget) Open(errWriter io.Writer) error {
 	if len(t.Recipients) == 0 {
 		return errors.New("MailTarget.Recipients must be specified")
 	}
+	if t.BufferSize < 0 {
+		return errors.New("MailTarget.BufferSize must be no less than 0")
+	}
+	t.entries = make(chan *Entry, t.BufferSize)
 
 	go t.sendMessages(errWriter)
 
