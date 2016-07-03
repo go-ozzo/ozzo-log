@@ -35,6 +35,7 @@ func NewMailTarget() *MailTarget {
 	return &MailTarget{
 		Filter:     &Filter{MaxLevel: LevelDebug},
 		BufferSize: 1024,
+		entries:make(chan *Entry,100),
 		close:      make(chan bool, 0),
 	}
 }
