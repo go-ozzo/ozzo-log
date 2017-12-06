@@ -2,17 +2,15 @@
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
-package log_test
+package log
 
 import (
 	"testing"
-
-	"github.com/go-ozzo/ozzo-log"
 )
 
 func TestNewMailTarget(t *testing.T) {
-	target := log.NewMailTarget()
-	if target.MaxLevel != log.LevelDebug {
-		t.Errorf("NewMailTarget.MaxLevel = %v, expected %v", target.MaxLevel, log.LevelDebug)
+	target := NewMailTarget()
+	if target.MaxLevel != LevelDebug {
+		t.Errorf("NewMailTarget.MaxLevel = %v, expected %v", target.MaxLevel, LevelDebug)
 	}
 }

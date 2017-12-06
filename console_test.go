@@ -2,19 +2,17 @@
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
-package log_test
+package log
 
 import (
 	"strings"
 	"testing"
-
-	"github.com/go-ozzo/ozzo-log"
 )
 
 func TestNewConsoleTarget(t *testing.T) {
-	target := log.NewConsoleTarget()
-	if target.MaxLevel != log.LevelDebug {
-		t.Errorf("ConsoleTarget.MaxLevel = %v, expected %v", target.MaxLevel, log.LevelDebug)
+	target := NewConsoleTarget()
+	if target.MaxLevel != LevelDebug {
+		t.Errorf("ConsoleTarget.MaxLevel = %v, expected %v", target.MaxLevel, LevelDebug)
 	}
 	if target.ColorMode != true {
 		t.Errorf("ConsoleTarget.ColorMode = %v, expected %v", target.ColorMode, true)
@@ -35,10 +33,10 @@ func (m *MemoryWriter) Write(p []byte) (int, error) {
 
 type ConsoleTargetMock struct {
 	done chan bool
-	*log.ConsoleTarget
+	*ConsoleTarget
 }
 
-func (t *ConsoleTargetMock) Process(e *log.Entry) {
+func (t *ConsoleTargetMock) Process(e *Entry) {
 	t.ConsoleTarget.Process(e)
 	if e == nil {
 		t.done <- true
@@ -46,10 +44,10 @@ func (t *ConsoleTargetMock) Process(e *log.Entry) {
 }
 
 func TestConsoleTarget(t *testing.T) {
-	logger := log.NewLogger()
+	logger := NewLogger()
 	target := &ConsoleTargetMock{
 		done:          make(chan bool, 0),
-		ConsoleTarget: log.NewConsoleTarget(),
+		ConsoleTarget: NewConsoleTarget(),
 	}
 	writer := &MemoryWriter{}
 	target.Writer = writer
