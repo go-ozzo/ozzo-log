@@ -85,7 +85,7 @@ type Target interface {
 
 // coreLogger maintains the log messages in a channel and sends them to various targets.
 type coreLogger struct {
-	lock    sync.Mutex
+	lock    sync.RWMutex
 	open    bool        // whether the logger is open
 	entries chan *Entry // log entries
 
@@ -184,7 +184,10 @@ func (l *Logger) Debug(format string, a ...interface{}) {
 
 // Log logs a message of a specified severity level.
 func (l *Logger) Log(level Level, format string, a ...interface{}) {
-	if level > l.MaxLevel || !l.open {
+    l.lock.RLock()
+    defer l.lock.RUnlock()
+
+    if level > l.MaxLevel || !l.open {
 		return
 	}
 	message := format
@@ -259,7 +262,10 @@ func (l *coreLogger) process() {
 // Existing messages will be processed before the targets are closed.
 // New incoming messages will be discarded after calling this method.
 func (l *coreLogger) Close() {
-	if !l.open {
+    l.lock.Lock()
+    defer l.lock.Unlock()
+
+    if !l.open {
 		return
 	}
 	l.open = false
