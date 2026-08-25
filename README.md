@@ -251,3 +251,13 @@ func main() {
 
 To change the logger configuration, simply modify the JSON file without
 recompiling the Go source files.
+
+## Star History
+
+<a href="https://starhistory.io">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.starhistory.io/png?repos=go-ozzo/ozzo-log&style=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.starhistory.io/png?repos=go-ozzo/ozzo-log&style=professional" />
+   <img alt="Star History Chart" src="https://api.starhistory.io/png?repos=go-ozzo/ozzo-log" width="800" />
+ </picture>
+</a>
