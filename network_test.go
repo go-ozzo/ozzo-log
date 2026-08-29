@@ -2,20 +2,18 @@
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
-package log_test
+package log
 
 import (
 	"net"
 	"strings"
 	"testing"
-
-	"github.com/go-ozzo/ozzo-log"
 )
 
 func TestNewNetworkTarget(t *testing.T) {
-	target := log.NewNetworkTarget()
-	if target.MaxLevel != log.LevelDebug {
-		t.Errorf("NetworkTarget.MaxLevel = %v, expected %v", target.MaxLevel, log.LevelDebug)
+	target := NewNetworkTarget()
+	if target.MaxLevel != LevelDebug {
+		t.Errorf("NetworkTarget.MaxLevel = %v, expected %v", target.MaxLevel, LevelDebug)
 	}
 	if !target.Persistent {
 		t.Errorf("NetworkTarget.Persistent should be true, got false")
@@ -60,8 +58,8 @@ func TestNetworkTarget(t *testing.T) {
 		return
 	}
 
-	logger := log.NewLogger()
-	target := log.NewNetworkTarget()
+	logger := NewLogger()
+	target := NewNetworkTarget()
 	target.Network = network
 	target.Address = address
 	target.Categories = []string{"system.*"}

@@ -2,14 +2,12 @@
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
-package log_test
-
-import "github.com/go-ozzo/ozzo-log"
+package log
 
 func ExampleLogger_Error() {
-	logger := log.NewLogger()
+	logger := NewLogger()
 
-	logger.Targets = append(logger.Targets, log.NewConsoleTarget())
+	logger.Targets = append(logger.Targets, NewConsoleTarget())
 
 	logger.Open()
 
@@ -20,10 +18,10 @@ func ExampleLogger_Error() {
 }
 
 func ExampleNewConsoleTarget() {
-	logger := log.NewLogger()
+	logger := NewLogger()
 
 	// creates a ConsoleTarget with color mode being disabled
-	target := log.NewConsoleTarget()
+	target := NewConsoleTarget()
 	target.ColorMode = false
 
 	logger.Targets = append(logger.Targets, target)
@@ -34,10 +32,10 @@ func ExampleNewConsoleTarget() {
 }
 
 func ExampleNewNetworkTarget() {
-	logger := log.NewLogger()
+	logger := NewLogger()
 
 	// creates a NetworkTarget which uses tcp network and address :10234
-	target := log.NewNetworkTarget()
+	target := NewNetworkTarget()
 	target.Network = "tcp"
 	target.Address = ":10234"
 
@@ -49,10 +47,10 @@ func ExampleNewNetworkTarget() {
 }
 
 func ExampleNewMailTarget() {
-	logger := log.NewLogger()
+	logger := NewLogger()
 
 	// creates a MailTarget which sends emails to admin@example.com
-	target := log.NewMailTarget()
+	target := NewMailTarget()
 	target.Host = "smtp.example.com"
 	target.Username = "foo"
 	target.Password = "bar"
@@ -68,10 +66,10 @@ func ExampleNewMailTarget() {
 }
 
 func ExampleNewFileTarget() {
-	logger := log.NewLogger()
+	logger := NewLogger()
 
 	// creates a FileTarget which keeps log messages in the app.log file
-	target := log.NewFileTarget()
+	target := NewFileTarget()
 	target.FileName = "app.log"
 
 	logger.Targets = append(logger.Targets, target)
