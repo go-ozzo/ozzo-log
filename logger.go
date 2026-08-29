@@ -52,6 +52,17 @@ func (l Level) String() string {
 	return "Unknown"
 }
 
+// ParseLevel retrun level by name (if not found return Debug)
+func ParseLevel(levelName string) Level {
+	for k, v := range LevelNames {
+		if v == levelName {
+			return k
+		}
+	}
+
+	return LevelDebug
+}
+
 // Entry represents a log entry.
 type Entry struct {
 	Level     Level
