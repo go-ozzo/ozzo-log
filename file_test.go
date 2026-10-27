@@ -5,8 +5,8 @@
 package log_test
 
 import (
-	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -30,8 +30,7 @@ func TestNewFileTarget(t *testing.T) {
 }
 
 func TestFileTarget(t *testing.T) {
-	logFile := "app.log"
-	os.Remove(logFile)
+	logFile := filepath.Join(t.TempDir(), "app.log")
 
 	logger := log.NewLogger()
 	target := log.NewFileTarget()
@@ -43,7 +42,7 @@ func TestFileTarget(t *testing.T) {
 	logger.GetLogger("system.db").Info("t2: %v", 3)
 	logger.Close()
 
-	bytes, err := ioutil.ReadFile(logFile)
+	bytes, err := os.ReadFile(logFile)
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}

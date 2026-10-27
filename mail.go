@@ -35,13 +35,13 @@ func NewMailTarget() *MailTarget {
 	return &MailTarget{
 		Filter:     &Filter{MaxLevel: LevelDebug},
 		BufferSize: 1024,
-		close:      make(chan bool, 0),
+		close:      make(chan bool),
 	}
 }
 
 // Open prepares MailTarget for processing log messages.
 func (t *MailTarget) Open(errWriter io.Writer) error {
-	t.Filter.Init()
+	t.Init()
 	if t.Host == "" {
 		return errors.New("MailTarget.Host must be specified")
 	}
@@ -96,7 +96,7 @@ func (t *MailTarget) sendMessages(errWriter io.Writer) {
 			break
 		}
 		if err := t.write(auth, entry.String()+"\n"); err != nil {
-			fmt.Fprintf(errWriter, "MailTarget write error: %v\n", err)
+			_, _ = fmt.Fprintf(errWriter, "MailTarget write error: %v\n", err)
 		}
 	}
 }

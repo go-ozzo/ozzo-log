@@ -1,0 +1,21 @@
+coverage:
+  precision: 2
+  round: down
+  range: "60...100"
+  status:
+    project:
+      default:
+        target: 70%
+        threshold: 2%
+        # Informational until the project reaches the target; then this line goes.
+        informational: true
+    patch:
+      default:
+        target: auto
+        informational: true
+  ignore:
+    - "**/testdata/**"
+
+comment:
+  layout: "header, diff, files"
+  require_changes: true

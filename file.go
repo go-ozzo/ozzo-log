@@ -43,13 +43,13 @@ func NewFileTarget() *FileTarget {
 		Rotate:      true,
 		BackupCount: 10,
 		MaxBytes:    1 << 20, // 1MB
-		close:       make(chan bool, 0),
+		close:       make(chan bool),
 	}
 }
 
 // Open prepares FileTarget for processing log messages.
 func (t *FileTarget) Open(errWriter io.Writer) error {
-	t.Filter.Init()
+	t.Init()
 	if t.FileName == "" {
 		return errors.New("FileTarget.FileName must be set")
 	}
@@ -62,6 +62,7 @@ func (t *FileTarget) Open(errWriter io.Writer) error {
 		}
 	}
 
+	//nolint:gosec // G302: file mode kept for compatibility; to be reviewed before v1.0.0
 	fd, err := os.OpenFile(t.FileName, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0660)
 	if err != nil {
 		return fmt.Errorf("FileTarget was unable to create a log file: %v", err)
@@ -75,7 +76,7 @@ func (t *FileTarget) Open(errWriter io.Writer) error {
 // Process saves an allowed log message into the log file.
 func (t *FileTarget) Process(e *Entry) {
 	if e == nil {
-		t.fd.Close()
+		_ = t.fd.Close()
 		t.close <- true
 		return
 	}
@@ -83,10 +84,10 @@ func (t *FileTarget) Process(e *Entry) {
 		if t.Rotate {
 			t.rotate(int64(len(e.String()) + 1))
 		}
-		n, err := t.fd.Write([]byte(e.String() + "\n"))
+		n, err := t.fd.WriteString(e.String() + "\n")
 		t.currentBytes += int64(n)
 		if err != nil {
-			fmt.Fprintf(t.errWriter, "FileTarge write error: %v\n", err)
+			_, _ = fmt.Fprintf(t.errWriter, "FileTarge write error: %v\n", err)
 		}
 	}
 }
@@ -100,7 +101,7 @@ func (t *FileTarget) rotate(bytes int64) {
 	if t.currentBytes+bytes <= t.MaxBytes || bytes > t.MaxBytes {
 		return
 	}
-	t.fd.Close()
+	t.fd.Close() //nolint:errcheck,gosec // TODO: report rotation errors to errWriter before v1.0.0
 	t.currentBytes = 0
 
 	var err error
@@ -114,14 +115,15 @@ func (t *FileTarget) rotate(bytes int64) {
 			continue
 		}
 		if i == t.BackupCount {
-			os.Remove(path)
+			os.Remove(path) //nolint:errcheck,gosec // TODO: report rotation errors to errWriter before v1.0.0
 		} else {
-			os.Rename(path, fmt.Sprintf("%v.%v", t.FileName, i+1))
+			os.Rename(path, fmt.Sprintf("%v.%v", t.FileName, i+1)) //nolint:errcheck,gosec // TODO: report rotation errors to errWriter before v1.0.0
 		}
 	}
+	//nolint:gosec // G302: file mode kept for compatibility; to be reviewed before v1.0.0
 	t.fd, err = os.OpenFile(t.FileName, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0660)
 	if err != nil {
 		t.fd = nil
-		fmt.Fprintf(t.errWriter, "FileTarget was unable to create a log file: %v", err)
+		_, _ = fmt.Fprintf(t.errWriter, "FileTarget was unable to create a log file: %v", err)
 	}
 }

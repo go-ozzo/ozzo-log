@@ -25,3 +25,17 @@ _testmain.go
 
 # test output
 app.log
+
+# Scratch, build output and coverage: never tracked
+/tmp/
+/dist/
+*.out
+coverage.*
+*.log
+
+# Private workspace, never tracked
+/.claude/
+/.pm/
+/docs/dev/
+/.gode/
+/.mcp.json
