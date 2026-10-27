@@ -5,6 +5,7 @@
 package log_test
 
 import (
+	"errors"
 	"io"
 	"testing"
 
@@ -46,6 +47,25 @@ type MemoryTarget struct {
 	entries []*log.Entry
 	open    bool
 	ready   chan bool
+}
+
+type failingTarget struct {
+	err error
+}
+
+func (f failingTarget) Open(io.Writer) error { return f.err }
+func (failingTarget) Process(*log.Entry)     {}
+func (failingTarget) Close()                 {}
+
+func TestLoggerOpenReturnsTargetError(t *testing.T) {
+	want := errors.New("target open failed")
+	logger := log.NewLogger()
+	defer logger.Close()
+	logger.Targets = append(logger.Targets, failingTarget{err: want})
+
+	if err := logger.Open(); !errors.Is(err, want) {
+		t.Fatalf("Logger.Open() error = %v, want error wrapping %v", err, want)
+	}
 }
 
 func (m *MemoryTarget) Open(io.Writer) error {

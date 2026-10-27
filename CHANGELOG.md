@@ -22,7 +22,8 @@ No version has been tagged yet; the first tagged release will be v1.0.0.
 
 ### Changed
 
-- No change in library behaviour. The code changes are findings of the new linter configuration: explicit `_ =` for
+- `Logger.Open()` now returns an error when a target fails to open instead of only writing the failure to `ErrorWriter`.
+- Existing code changes are findings of the new linter configuration: explicit `_ =` for
   deliberately ignored write and close errors, `make(chan bool)` for `make(chan bool, 0)`, `WriteString` for
   `Write([]byte(s))`. The few findings that would change behaviour (error texts, log file mode, errors of log
   rotation) are marked with `//nolint` and a reason, to be decided before v1.0.0.
