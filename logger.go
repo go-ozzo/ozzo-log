@@ -205,7 +205,8 @@ func (l *Logger) Log(level Level, format string, a ...interface{}) {
 }
 
 // Open prepares the logger and the targets for logging purpose.
-// Open must be called before any message can be logged.
+// Open must be called before any message can be logged. It returns an error
+// if one or more targets fail to open; successfully opened targets remain active.
 func (l *coreLogger) Open() error {
 	l.lock.Lock()
 	defer l.lock.Unlock()
@@ -226,9 +227,11 @@ func (l *coreLogger) Open() error {
 
 	l.entries = make(chan *Entry, l.BufferSize)
 	var targets []Target
+	var targetErr error
 	for _, target := range l.Targets {
 		if err := target.Open(l.ErrorWriter); err != nil {
 			_, _ = fmt.Fprintf(l.ErrorWriter, "Failed to open target: %v", err)
+			targetErr = errors.Join(targetErr, fmt.Errorf("failed to open target: %w", err))
 		} else {
 			targets = append(targets, target)
 		}
@@ -239,7 +242,7 @@ func (l *coreLogger) Open() error {
 
 	l.open = true
 
-	return nil
+	return targetErr
 }
 
 // process sends the messages to targets for processing.
