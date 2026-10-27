@@ -46,13 +46,13 @@ func NewNetworkTarget() *NetworkTarget {
 		Filter:     &Filter{MaxLevel: LevelDebug},
 		BufferSize: 1024,
 		Persistent: true,
-		close:      make(chan bool, 0),
+		close:      make(chan bool),
 	}
 }
 
 // Open prepares NetworkTarget for processing log messages.
 func (t *NetworkTarget) Open(errWriter io.Writer) error {
-	t.Filter.Init()
+	t.Init()
 
 	if t.BufferSize < 0 {
 		return errors.New("NetworkTarget.BufferSize must be no less than 0")
@@ -95,7 +95,7 @@ func (t *NetworkTarget) Close() {
 
 func (t *NetworkTarget) connect() error {
 	if t.conn != nil {
-		t.conn.Close()
+		_ = t.conn.Close()
 		t.conn = nil
 	}
 
@@ -105,7 +105,7 @@ func (t *NetworkTarget) connect() error {
 	}
 
 	if tcpConn, ok := conn.(*net.TCPConn); ok {
-		tcpConn.SetKeepAlive(true)
+		_ = tcpConn.SetKeepAlive(true)
 	}
 
 	t.conn = conn
@@ -117,13 +117,13 @@ func (t *NetworkTarget) sendMessages(errWriter io.Writer) {
 		entry := <-t.entries
 		if entry == nil {
 			if t.conn != nil {
-				t.conn.Close()
+				_ = t.conn.Close()
 			}
 			t.close <- true
 			break
 		}
 		if err := t.write(entry.String() + "\n"); err != nil {
-			fmt.Fprintf(errWriter, "NetworkTarget write error: %v\n", err)
+			_, _ = fmt.Fprintf(errWriter, "NetworkTarget write error: %v\n", err)
 		}
 	}
 }
@@ -133,7 +133,8 @@ func (t *NetworkTarget) write(message string) error {
 		if err := t.connect(); err != nil {
 			return err
 		}
-		defer t.conn.Close()
+		conn := t.conn // bound now, as `defer t.conn.Close()` did
+		defer func() { _ = conn.Close() }()
 	}
 	_, err := t.conn.Write([]byte(message))
 	return err

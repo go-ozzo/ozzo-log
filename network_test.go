@@ -23,18 +23,22 @@ func TestNewNetworkTarget(t *testing.T) {
 }
 
 type LogServer struct {
-	t      *testing.T
-	done   chan bool
-	buffer []byte
+	t        *testing.T
+	done     chan bool
+	buffer   []byte
+	listener net.Listener
 }
 
+// Start listens on address (use port 0 for a free port; read the real one from Addr)
+// and accepts a single connection.
 func (s *LogServer) Start(network, address string) error {
-	s.done = make(chan bool, 0)
+	s.done = make(chan bool)
 	s.buffer = make([]byte, 1024)
 	listener, err := net.Listen(network, address)
 	if err != nil {
 		return err
 	}
+	s.listener = listener
 	go func() {
 		conn, err := listener.Accept()
 		if err != nil {
@@ -42,6 +46,7 @@ func (s *LogServer) Start(network, address string) error {
 			s.done <- true
 			return
 		}
+		defer conn.Close()
 		if _, err := conn.Read(s.buffer); err != nil {
 			s.t.Errorf("Server read error: %v", err)
 		}
@@ -51,19 +56,29 @@ func (s *LogServer) Start(network, address string) error {
 	return nil
 }
 
+// Addr returns the address the server really listens on.
+func (s *LogServer) Addr() string {
+	return s.listener.Addr().String()
+}
+
+// Close stops listening, so the port is free again for the next run.
+func (s *LogServer) Close() error {
+	return s.listener.Close()
+}
+
 func TestNetworkTarget(t *testing.T) {
 	network := "tcp"
-	address := ":10234"
 	server := &LogServer{t: t}
-	if err := server.Start(network, address); err != nil {
+	if err := server.Start(network, "127.0.0.1:0"); err != nil {
 		t.Errorf("server.Open(): %v", err)
 		return
 	}
+	t.Cleanup(func() { _ = server.Close() })
 
 	logger := log.NewLogger()
 	target := log.NewNetworkTarget()
 	target.Network = network
-	target.Address = address
+	target.Address = server.Addr()
 	target.Categories = []string{"system.*"}
 	logger.Targets = append(logger.Targets, target)
 	logger.Open()

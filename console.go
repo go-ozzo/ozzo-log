@@ -47,13 +47,13 @@ func NewConsoleTarget() *ConsoleTarget {
 		Filter:    &Filter{MaxLevel: LevelDebug},
 		ColorMode: true,
 		Writer:    os.Stdout,
-		close:     make(chan bool, 0),
+		close:     make(chan bool),
 	}
 }
 
 // Open prepares ConsoleTarget for processing log messages.
 func (t *ConsoleTarget) Open(io.Writer) error {
-	t.Filter.Init()
+	t.Init()
 	if t.Writer == nil {
 		return errors.New("ConsoleTarget.Writer cannot be nil")
 	}
@@ -79,7 +79,7 @@ func (t *ConsoleTarget) Process(e *Entry) {
 			msg = brush(msg)
 		}
 	}
-	fmt.Fprintln(t.Writer, msg)
+	_, _ = fmt.Fprintln(t.Writer, msg)
 }
 
 // Close closes the console target.

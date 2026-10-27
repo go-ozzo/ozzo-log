@@ -48,7 +48,7 @@ func (t *ConsoleTargetMock) Process(e *log.Entry) {
 func TestConsoleTarget(t *testing.T) {
 	logger := log.NewLogger()
 	target := &ConsoleTargetMock{
-		done:          make(chan bool, 0),
+		done:          make(chan bool),
 		ConsoleTarget: log.NewConsoleTarget(),
 	}
 	writer := &MemoryWriter{}

@@ -215,20 +215,20 @@ func (l *coreLogger) Open() error {
 	}
 
 	if l.ErrorWriter == nil {
-		return errors.New("Logger.ErrorWriter must be set.")
+		return errors.New("Logger.ErrorWriter must be set.") //nolint:staticcheck // ST1005: user-visible text kept until the API review before v1.0.0
 	}
 	if l.BufferSize < 0 {
-		return errors.New("Logger.BufferSize must be no less than 0.")
+		return errors.New("Logger.BufferSize must be no less than 0.") //nolint:staticcheck // ST1005: user-visible text kept until the API review before v1.0.0
 	}
 	if l.CallStackDepth < 0 {
-		return errors.New("Logger.CallStackDepth must be no less than 0.")
+		return errors.New("Logger.CallStackDepth must be no less than 0.") //nolint:staticcheck // ST1005: user-visible text kept until the API review before v1.0.0
 	}
 
 	l.entries = make(chan *Entry, l.BufferSize)
 	var targets []Target
 	for _, target := range l.Targets {
 		if err := target.Open(l.ErrorWriter); err != nil {
-			fmt.Fprintf(l.ErrorWriter, "Failed to open target: %v", err)
+			_, _ = fmt.Fprintf(l.ErrorWriter, "Failed to open target: %v", err)
 		} else {
 			targets = append(targets, target)
 		}

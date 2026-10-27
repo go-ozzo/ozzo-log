@@ -1,8 +1,8 @@
 # ozzo-log
 
-[![GoDoc](https://godoc.org/github.com/go-ozzo/ozzo-log?status.png)](http://godoc.org/github.com/go-ozzo/ozzo-log)
-[![Build Status](https://travis-ci.org/go-ozzo/ozzo-log.svg?branch=master)](https://travis-ci.org/go-ozzo/ozzo-log)
-[![Coverage](http://gocover.io/_badge/github.com/go-ozzo/ozzo-log)](http://gocover.io/github.com/go-ozzo/ozzo-log)
+[![Go Reference](https://pkg.go.dev/badge/github.com/go-ozzo/ozzo-log.svg)](https://pkg.go.dev/github.com/go-ozzo/ozzo-log)
+[![CI](https://github.com/go-ozzo/ozzo-log/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/go-ozzo/ozzo-log/actions/workflows/ci.yml)
+[![Codecov](https://codecov.io/gh/go-ozzo/ozzo-log/branch/master/graph/badge.svg)](https://codecov.io/gh/go-ozzo/ozzo-log)
 
 ozzo-log это Go-пакет предоставляющий расширенную поддержку логирования для Go программ. Он имеет следующие свойства:
 
